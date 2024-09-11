@@ -8,25 +8,27 @@ function clickCloseFilteredView() {
     });
   }
   
-  // Function to attach event listener to the close button
-  function attachCloseButtonListener() {
-    const closeButton = document.querySelector('button[data-testid="close-btn"]');
-    if (closeButton && !closeButton.dataset.listenerAttached) {
-      closeButton.addEventListener('click', () => {
-        setTimeout(clickCloseFilteredView, 10); // Ensure the button has rendered
-      });
-      closeButton.dataset.listenerAttached = "true"; // Prevent adding multiple listeners
-    }
+  // Function to attach event listeners to all close buttons
+  function attachCloseButtonListeners() {
+    const closeButtons = document.querySelectorAll('button[data-testid="close-btn"]');
+    closeButtons.forEach(closeButton => {
+      if (!closeButton.dataset.listenerAttached) {
+        closeButton.addEventListener('click', () => {
+          setTimeout(clickCloseFilteredView, 10); // Ensure the button has rendered
+        });
+        closeButton.dataset.listenerAttached = "true"; // Prevent multiple listeners
+      }
+    });
   }
   
-  // Use MutationObserver to watch for changes in the DOM
+  // Use MutationObserver to watch for changes in the DOM and attach listeners dynamically
   const observer = new MutationObserver(() => {
-    attachCloseButtonListener(); // Attach listener when the close button appears
+    attachCloseButtonListeners(); // Attach listener when close buttons appear
   });
   
   // Start observing the document's body for added nodes
   observer.observe(document.body, { childList: true, subtree: true });
   
-  // Try attaching the listener immediately in case the button is already present
-  attachCloseButtonListener();
+  // Try attaching the listeners immediately in case the buttons are already present
+  attachCloseButtonListeners();
   
